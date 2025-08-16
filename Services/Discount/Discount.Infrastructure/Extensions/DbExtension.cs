@@ -24,7 +24,7 @@ namespace Discount.Infrastructure.Extensions
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
+                    logger.LogError(ex, "An error occurred");
                     throw;
                 }
 
@@ -34,26 +34,48 @@ namespace Discount.Infrastructure.Extensions
 
         private static void ApplyMigration(IConfiguration config)
         {
-            using var connection = new NpgsqlConnection(config.GetValue<string>("DatabaseSettings:ConnectionString"));
-            connection.Open();
-            using var command = new NpgsqlCommand()
-            {
-                Connection = connection
-            };
+            var retry = 5;
 
-            command.CommandText = "DROP TABLE IF EXISTS Coupon";
-            command.ExecuteNonQuery();
-            command.CommandText = @"CREATE TABLE Coupon (Id SERIAL PRIMARY KEY,
+            while (retry > 0)
+            {
+                try
+                {
+                    using var connection = new NpgsqlConnection(config.GetValue<string>("DatabaseSettings:ConnectionString"));
+                    connection.Open();
+                    using var command = new NpgsqlCommand()
+                    {
+                        Connection = connection
+                    };
+
+                    command.CommandText = "DROP TABLE IF EXISTS Coupon";
+                    command.ExecuteNonQuery();
+                    command.CommandText = @"CREATE TABLE Coupon (Id SERIAL PRIMARY KEY,
                                                         ProductName VARCHAR(500) NOT NULL,
                                                         Description TEXT,
                                                         Amount INT)";
-            command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
 
-            command.CommandText = "INSERT INTO Coupon (ProductName, Description, Amount) VALUES (`Adidas Quick Force Indoor Badminton Shoes`, `Shoe Discount`, 500)";
-            command.ExecuteNonQuery();
+                    command.CommandText = "INSERT INTO Coupon (ProductName, Description, Amount) VALUES ('Adidas Quick Force Indoor Badminton Shoes', 'Shoe Discount', 500)";
+                    command.ExecuteNonQuery();
 
-            command.CommandText = "INSERT INTO Coupon (ProductName, Description, Amount) VALUES (`Yonex VCORE Pro 100 A Tennis Racquet (270gm, Strung)`, `Racket Discount`, 700)";
-            command.ExecuteNonQuery();
+                    command.CommandText = "INSERT INTO Coupon (ProductName, Description, Amount) VALUES ('Yonex VCORE Pro 100 A Tennis Racquet (270gm, Strung)', 'Racket Discount', 700)";
+                    command.ExecuteNonQuery();
+
+                    break;
+                    // exit loop if successful
+                }
+                catch (Exception ex)
+                {
+                    retry--;
+
+                    if (retry == 0)
+                    {
+                        throw;
+                    }
+                    // wait for 2 seconds
+                    Thread.Sleep(2000);
+                }
+            }
         }
     }
 }

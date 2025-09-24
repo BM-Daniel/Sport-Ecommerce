@@ -3,9 +3,14 @@ using Catalog.Application.Handlers;
 using Catalog.Core.Repositories;
 using Catalog.Infrastructure.Data;
 using Catalog.Infrastructure.Repositories;
+using Common.Logging;
+using Serilog;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// serilog configuration
+builder.Host.UseSerilog(Logging.ConfigureLogger);
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -32,7 +37,7 @@ var assemblies = new Assembly[]
 };
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
 
-//builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetAllBrandsHandler>());
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetAllBrandsHandler>());
 
 // register application services
 builder.Services.AddScoped<ICatalogContext, CatalogContext>();

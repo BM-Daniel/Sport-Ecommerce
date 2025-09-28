@@ -59,4 +59,5 @@ volumes:
   portainer_data:
   postgres_data:
   pgadmin_data:
-  elasticsearch-data:  
+  elasticsearch-data:
+  orderdb-data:

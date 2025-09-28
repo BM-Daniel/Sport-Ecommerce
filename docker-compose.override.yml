@@ -38,6 +38,8 @@ services:
     restart: always
     ports:
       - "1433:1433"
+    volumes:
+      - orderdb-data:/var/opt/mssql
     healthcheck:
       test: ["CMD-SHELL", "pidof sqlservr > /dev/null || exit 1"]
       interval: 5s
@@ -61,7 +63,7 @@ services:
       - "DatabaseSettings__CollectionName=Products"
       - "DatabaseSettings__BrandsCollection=Brands"
       - "DatabaseSettings__TypesCollection=Types"
-      - "ElasticConfiguration__Uri=http://localhost:9200"
+      - "ElasticConfiguration__Uri=http://elasticsearch:9200"
     depends_on:
       - catalogdb
     ports:
@@ -74,7 +76,7 @@ services:
       - "CacheSettings__ConnectionString=basketdb:6379"
       - "GrpcSettings__DiscountUrl=http://discount.api:8080"
       - "EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672"
-      - "ElasticConfiguration__Uri=http://localhost:9200"
+      - "ElasticConfiguration__Uri=http://elasticsearch:9200"
     depends_on:
       - basketdb
       - rabbitmq
@@ -86,7 +88,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "DatabaseSettings__ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=Password@1;"
-      - "ElasticConfiguration__Uri=http://localhost:9200"
+      - "ElasticConfiguration__Uri=http://elasticsearch:9200"
     depends_on:
       discountdb:
         condition: service_healthy
@@ -99,7 +101,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings__OrderingConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=Password@1;TrustServerCertificate=True"
       - "EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672"
-      - "ElasticConfiguration__Uri=http://localhost:9200"
+      - "ElasticConfiguration__Uri=http://elasticsearch:9200"
     depends_on:
       - orderdb
       - rabbitmq

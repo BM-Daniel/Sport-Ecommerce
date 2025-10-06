@@ -7,15 +7,22 @@
       style="max-height: 70px"
       alt="my-view"
       class="logo"
+      routerLink="/"
     />
     <h5 class="my-0 ml-md-2 font-weight-normal"></h5>
   </div>
 
   <nav class="my-2 my-md-0 mr-md-3 text-uppercase" style="font-size: larger">
-    <a href="" class="p-2">Home</a>
-    <a href="" class="p-2">Store</a>
-    <a href="" class="p-2">GitHub</a>
-    <a href="" class="p-2">Twitter</a>
+    <a
+      routerLink="/"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="p-2"
+      >Home</a
+    >
+    <a routerLink="/store" routerLinkActive="active" class="p-2">Store</a>
+    <a class="p-2">GitHub</a>
+    <a class="p-2">Twitter</a>
   </nav>
 
   <div class="d-flex align-center">

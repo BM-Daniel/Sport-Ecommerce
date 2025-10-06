@@ -14,6 +14,12 @@ export class StoreService {
 
   baseUrl = 'http://localhost:8000/';
 
+  getProductById(id: string) {
+    return this.http.get<IProduct>(
+      this.baseUrl + 'api/v1/Catalog/GetProductById/' + id
+    );
+  }
+
   getProducts(storeParams: StoreParams) {
     let params = new HttpParams();
 

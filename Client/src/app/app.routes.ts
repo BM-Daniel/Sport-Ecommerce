@@ -5,11 +5,12 @@ import { NotFoundComponent } from './core/not-found/not-found.component';
 import { NotAuthenticatedComponent } from './core/not-authenticated/not-authenticated.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: HomeComponent, data: { breadcrumb: 'Home' } },
   {
     path: 'store',
     loadChildren: () =>
       import('./store/store.module').then((mod) => mod.StoreModule),
+    data: { breadcrumb: 'Store' },
   },
   { path: 'server-error', component: ServerErrorComponent },
   { path: 'not-found', component: NotFoundComponent },

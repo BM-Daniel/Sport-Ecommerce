@@ -3,6 +3,7 @@ import { IProduct } from '../../shared/models/product';
 import { StoreService } from '../store.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
   selector: 'app-product-details',
@@ -16,7 +17,8 @@ export class ProductDetailsComponent implements OnInit {
 
   constructor(
     private storeService: StoreService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private breadcrumbService: BreadcrumbService
   ) {}
 
   ngOnInit(): void {
@@ -30,6 +32,7 @@ export class ProductDetailsComponent implements OnInit {
       this.storeService.getProductById(id).subscribe({
         next: (response) => {
           this.product = response;
+          this.breadcrumbService.set('@productDetails', response.name);
         },
         error: (error) => console.log(error),
       });

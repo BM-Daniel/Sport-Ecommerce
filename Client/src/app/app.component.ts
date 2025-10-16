@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from './core/navbar/navbar.component';
-import { HttpClient } from '@angular/common/http';
-import { IProduct } from './shared/models/product';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './core/header/header.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { BasketService } from './basket/basket.service';
 
 @Component({
   selector: 'app-root',
@@ -15,9 +14,14 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 })
 export class AppComponent implements OnInit {
   title = 'eCommerce';
-  products: IProduct[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private basketService: BasketService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const basket_username = localStorage.getItem('basket_username');
+
+    if (basket_username) {
+      this.basketService.getBasket(basket_username);
+    }
+  }
 }

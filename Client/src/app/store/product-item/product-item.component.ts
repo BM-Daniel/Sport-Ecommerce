@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { IProduct } from '../../shared/models/product';
 import { CurrencyPipe, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { BasketService } from '../../basket/basket.service';
 
 @Component({
   selector: 'app-product-item',
@@ -12,4 +13,10 @@ import { RouterLink } from '@angular/router';
 })
 export class ProductItemComponent {
   @Input() product?: IProduct;
+
+  constructor(private basketService: BasketService) {}
+
+  addItemToBasket() {
+    this.product && this.basketService.addItemToBasket(this.product);
+  }
 }
